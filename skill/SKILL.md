@@ -42,11 +42,22 @@ dsh-conversation-files/
 
 ## 最快路径：直接装现成 bundle
 
-`assets/dsh-conversation-files/` 是完整可运行的源码副本。
+### 方式 A：从 GitHub 装（有网就行）
+
+```bash
+git clone https://github.com/Shall0vv/dsh-conversation-files.git ~/dsh-conversation-files
+# 然后在 DSH 里：
+plugin_manager install_bundle target=/Users/<你>/dsh-conversation-files
+```
+
+仓库根就是 bundle 本体（`package.json` 在根），`docs/` 是截图、`skill/SKILL.md` 是本文件。
+
+### 方式 B：从本 skill 的 assets 装（离线 / 没网时）
+
+`assets/dsh-conversation-files/` 是同一份源码副本。
 
 ```bash
 cp -R <skill目录>/assets/dsh-conversation-files ~/dsh-conversation-files
-# 然后：
 plugin_manager install_bundle target=/Users/<你>/dsh-conversation-files
 ```
 
