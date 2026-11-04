@@ -11,7 +11,7 @@ Click 生成文件 (folder icon, below SSH) in the left sidebar to open the pane
 ## Install
 
 ```bash
-git clone https://github.com/<you>/dsh-conversation-files.git
+git clone https://github.com/Shall0vv/dsh-conversation-files.git
 # in DSH:
 plugin_manager install_bundle target=<absolute path to the cloned repo>
 ```
