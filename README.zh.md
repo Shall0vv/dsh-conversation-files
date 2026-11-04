@@ -1,14 +1,8 @@
-# dsh-conversation-files（生成文件）
+# dsh-conversation-files（对话文件）
 
 一个 DeepSeek Harness（DSH）Web 插件：在左侧栏加一个入口，把**所有对话里助手为你生成过的文件**汇总成一个画廊面板，按文件类型分组。
 
-点击左栏的「生成文件」（文件夹图标，在 SSH 下方）打开面板。
-
-![面板全貌](docs/screenshot-gallery.jpg)
-
-![分组与缩略图](docs/screenshot-groups.jpg)
-
-![卡片三点菜单](docs/screenshot-menu.jpg)
+点击左栏的「对话文件」（文件夹图标，在 SSH 下方）打开面板。
 
 > English version: [README.md](./README.md)
 

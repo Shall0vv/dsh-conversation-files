@@ -2,28 +2,9 @@
 
 A DeepSeek Harness (DSH) web plugin: a left-sidebar entry that gathers **every file the assistant generated for you — across all conversations** — into one gallery panel, grouped by file type.
 
-![gallery](docs/screenshot-gallery.jpg)
-
-Click 生成文件 (folder icon, below SSH) in the left sidebar to open the panel.
+Click 对话文件 (folder icon, below SSH) in the left sidebar to open the panel.
 
 > 中文版: [README.zh.md](./README.zh.md)
-
-## Install
-
-```bash
-git clone https://github.com/Shall0vv/dsh-conversation-files.git
-# in DSH:
-plugin_manager install_bundle target=<absolute path to the cloned repo>
-```
-
-If it reports `already-installed`, run `plugin_manager remove_bundle target=dsh-conversation-files` first, then install again. Reload the page (Cmd+R) afterwards.
-
-Requires macOS for the QuickLook thumbnails, the trash action and "open with" — see `skill/SKILL.md` for the Windows/Linux fallbacks.
-
-## Skill
-
-`skill/SKILL.md` is a self-contained spec of this plugin: trigger phrases, rebuild instructions, cache design, and a list of the traps we hit while building it. Drop it into `~/.dsh/skills/dsh-generated-files/` and a fresh DSH session can reinstall or rebuild the whole thing from scratch.
-
 
 ## What shows up
 

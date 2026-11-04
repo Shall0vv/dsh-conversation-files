@@ -1,11 +1,11 @@
 ---
 name: dsh-generated-files
-description: 在 DSH 左侧栏做一个「生成文件」画廊：跨所有对话汇总助手写/改/交付给用户的文件，卡片网格 + 类型分组 + 缩略图 + 单击用默认应用打开 + ⋮ 菜单（打开方式/Finder/废纸篓）。当用户要求「汇总所有对话里你为我生成的文件」「像 Claude Code 那样列出产出文件」「做一个生成文件面板/画廊」，或需要在新机器上安装/重建 dsh-conversation-files 插件时使用。
+description: 在 DSH 左侧栏做一个「对话文件」画廊：跨所有对话汇总助手写/改/交付给用户的文件，卡片网格 + 类型分组 + 缩略图 + 单击用默认应用打开 + ⋮ 菜单（打开方式/Finder/废纸篓）。当用户要求「汇总所有对话里你为我生成的文件」「像 Claude Code 那样列出产出文件」「做一个生成文件面板/画廊」，或需要在新机器上安装/重建 dsh-conversation-files 插件时使用。
 ---
 
 # dsh-generated-files — 跨对话生成文件画廊
 
-在 DSH Web 左侧栏加一个「生成文件」入口，把所有对话里**助手产出**的文件汇总成卡片画廊。
+在 DSH Web 左侧栏加一个「对话文件」入口，把所有对话里**助手产出**的文件汇总成卡片画廊。
 
 ## 何时用
 
@@ -62,13 +62,13 @@ plugin_manager install_bundle target=/Users/<你>/dsh-conversation-files
 ```
 
 若提示 `already-installed`，先 `plugin_manager remove_bundle target=dsh-conversation-files` 再装。
-装完刷新页面（Cmd+R），左栏出现「生成文件」，点开即可。
+装完刷新页面（Cmd+R），左栏出现「对话文件」，点开即可。
 
 **在新机器上装（明天换电脑用这个流程）**：
 
 1. 把 `dsh-generated-files-skill.zip`（工作区根目录，含 SKILL.md + assets）拷到新机器。
 2. 解压到 `~/.dsh/skills/`，确保是 `~/.dsh/skills/dsh-generated-files/SKILL.md`。
-3. 打开新会话，直接说：**「按 dsh-generated-files 这个 skill 帮我把生成文件插件装上」** —— 新会话的模型会看到这个 skill，照着把 bundle 复制出来跑 `plugin_manager install_bundle`。
+3. 打开新会话，直接说：**「按 dsh-generated-files 这个 skill 帮我把对话文件插件装上」** —— 新会话的模型会看到这个 skill，照着把 bundle 复制出来跑 `plugin_manager install_bundle`。
 4. 如果新机器上没有 `~/.dsh/skills` 目录，先建：`mkdir -p ~/.dsh/skills`。
 
 ## 从头重建（assets 不可用时）
@@ -190,7 +190,7 @@ Office 一定要拆开：xls/xlsx/numbers/ods/csv/tsv → `sheet`；ppt/pptx/key
 ## 验证清单
 
 1. `node --check client/client.js`；`cp lib/index.js /tmp/h.mjs && node --check /tmp/h.mjs`
-2. 装好后刷新页面，左栏出现「生成文件」；面板显示「共 N 个文件 · 来自 M 个对话」
+2. 装好后刷新页面，左栏出现「对话文件」；面板显示「共 N 个文件 · 来自 M 个对话」
 3. chips 数量之和合理（全部 + 已删除 = 总文件条数）
 4. 随便滚到「文档」组，Office 卡片要有 QuickLook 缩略图 + 右上角扩展名角标
 5. 点一次卡片应打开系统应用；点 ⋮ 应弹出四项菜单并有动画

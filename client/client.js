@@ -166,7 +166,7 @@ window.__ModuleLoader__.load({
     ].join('')
 
     var zh = {
-      title: '生成文件',
+      title: '对话文件',
       description: '跨所有对话汇总助手为你生成、修改或交付的文件',
       summary: '共 {n} 个文件 · 来自 {m} 个对话',
       loading: '正在扫描所有对话…',
@@ -217,7 +217,7 @@ window.__ModuleLoader__.load({
     }
 
     var en = {
-      title: 'Generated files',
+      title: 'Conversation files',
       description: 'Every file the assistant created, changed or delivered, across all conversations',
       summary: '{n} files from {m} conversations',
       loading: 'Scanning all conversations…',
