@@ -1,7 +1,7 @@
 {
   "name": "dsh-conversation-files",
   "version": "0.1.0",
-  "description": "A DeepSeek Harness plugin: a left-sidebar panel that gathers every file mentioned, read, written, delivered or attached in the current conversation.",
+  "description": "A DeepSeek Harness plugin: a left-sidebar gallery that gathers every file the assistant wrote, edited or delivered across all conversations.",
   "icon": "icon.svg",
   "type": "module",
   "main": "lib/index.js",
@@ -23,7 +23,8 @@
     "locale/*.json",
     "icon.svg",
     "README.md",
-    "README.zh.md"
+    "README.zh.md",
+    "screenshots.json"
   ],
   "dsh": {
     "bundle": {
@@ -39,9 +40,15 @@
   "keywords": [
     "deepseek-harness",
     "dsh",
+    "dsh-plugin",
     "plugin",
     "files",
+    "gallery",
     "sidebar"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shall0vv/dsh-conversation-files.git"
+  }
 }

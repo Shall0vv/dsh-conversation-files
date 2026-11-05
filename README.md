@@ -84,16 +84,39 @@ Caching happens at three levels, so the panel is never stuck on a loading screen
 
 A warm-up scan runs five seconds after the host starts, so even a cold process has a snapshot ready before you click the sidebar entry.
 
+## Screenshots
+
+![The gallery, grouped by file type](docs/screenshot-gallery.jpg)
+![Thumbnails for images, markdown, code and documents](docs/screenshot-groups.jpg)
+![The card menu: open with the default app, choose an app, reveal in Finder, move to Trash](docs/screenshot-menu.jpg)
+
 ## Limits
 
 - Files written through `bash` redirections (`>`, `tee`, …) are invisible — that is not a structured write call. Only tool arguments are parsed.
 - A file with a `.conf` / `.lock` extension lands in 配置; unknown extensions (fonts, binaries) land in 其他.
 
-## Install (already installed in this profile)
+## Install
+
+```sh
+git clone https://github.com/Shall0vv/dsh-conversation-files
+```
+
+Then, in DSH:
+
+```
+plugin_manager install_bundle target=<absolute path to the cloned folder>
+```
+
+To update an installed copy, remove it first:
 
 ```
 plugin_manager remove_bundle  target=dsh-conversation-files
-plugin_manager install_bundle target=/Users/asai/Library/Mobile Documents/com~apple~CloudDocs/Documents/大肥鱼工作区/dsh-conversation-files
+plugin_manager install_bundle target=<absolute path to the cloned folder>
 ```
 
-The bundle is linked from `~/.dsh/profiles/desktop/package.json` and listed in `dsh.profile.bundles`, so it survives a restart. Removing the bundle from the profile removes the sidebar entry.
+The bundle is linked into `~/.dsh/profiles/<profile>/package.json` and listed in `dsh.profile.bundles`, so it survives a restart. Removing the bundle from the profile removes the sidebar entry.
+
+### Requirements
+
+- macOS, for the QuickLook thumbnails (`qlmanage`), the Trash move (`~/.Trash`) and the open-with picker (`osascript`). The gallery itself, the text previews and the filters work anywhere.
+- DSH with a `web` client bundle — no extra dependencies.

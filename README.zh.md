@@ -84,16 +84,39 @@
 
 Host 启动 5 秒后会预热扫一次，所以即使进程刚冷启动，点开侧栏时快照也已经就绪。
 
+## 截图
+
+![按文件类型分组的画廊](docs/screenshot-gallery.jpg)
+![图片、Markdown、代码和文档的缩略图](docs/screenshot-groups.jpg)
+![卡片菜单：默认应用打开、选择应用打开、在 Finder 中显示、移到废纸篓](docs/screenshot-menu.jpg)
+
 ## 已知限制
 
 - 通过 `bash` 重定向（`>`、`tee` 等）写出的文件是看不见的 —— 那不是结构化写入调用，只有工具参数会被解析。
 - `.conf` / `.lock` 这类扩展名落到「配置」；未知扩展名（字体、二进制等）落到「其他」。
 
-## 安装（本 profile 已安装）
+## 安装
+
+```sh
+git clone https://github.com/Shall0vv/dsh-conversation-files
+```
+
+然后在 DSH 里：
+
+```
+plugin_manager install_bundle target=<克隆下来的目录的绝对路径>
+```
+
+更新已安装的版本，先移除再装：
 
 ```
 plugin_manager remove_bundle  target=dsh-conversation-files
-plugin_manager install_bundle target=/Users/asai/Library/Mobile Documents/com~apple~CloudDocs/Documents/大肥鱼工作区/dsh-conversation-files
+plugin_manager install_bundle target=<克隆下来的目录的绝对路径>
 ```
 
-bundle 以 link 形式挂在 `~/.dsh/profiles/desktop/package.json`，并登记在 `dsh.profile.bundles` 里，重启后依然生效。从 profile 里移除这个 bundle，侧栏入口也就消失了。
+bundle 以 link 形式挂到 `~/.dsh/profiles/<profile>/package.json`，并登记在 `dsh.profile.bundles` 里，重启后依然生效。从 profile 里移除这个 bundle，侧栏入口也就消失了。
+
+### 运行要求
+
+- macOS：QuickLook 缩略图（`qlmanage`）、移到废纸篓（`~/.Trash`）、选择应用打开（`osascript`）用的是系统能力；画廊本身、文本缩略图、筛选在任何平台都能用。
+- DSH 需要带 `web` 客户端，没有额外依赖。
