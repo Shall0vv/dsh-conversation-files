@@ -96,7 +96,7 @@ window.__ModuleLoader__.load({
       '.cf-card-menu-btn{position:absolute;right:4px;bottom:4px;display:flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;opacity:0;transition:opacity .12s ease,background .12s ease}',
       '.cf-card:hover .cf-card-menu-btn,.cf-card-menu-btn:focus-visible{opacity:1}',
       '.cf-card-menu-btn:hover{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary)}',
-      '.cf-card-menu{position:absolute;right:2px;bottom:26px;z-index:8;display:flex;flex-direction:column;min-width:172px;padding:4px;border:1px solid var(--dsw-alias-border-l1);border-radius:10px;background:var(--dsw-alias-bg-overlay);box-shadow:0 10px 28px rgba(0,0,0,.38);transform-origin:bottom right;animation:cf-menu-pop .17s cubic-bezier(.22,.9,.32,1.12) both}',
+      '.cf-card-menu{position:fixed;z-index:1200;display:flex;flex-direction:column;min-width:172px;padding:4px;border:1px solid var(--dsw-alias-border-l1);border-radius:10px;background:var(--dsw-alias-bg-overlay);box-shadow:0 10px 28px rgba(0,0,0,.38);transform-origin:bottom right;animation:cf-menu-pop .17s cubic-bezier(.22,.9,.32,1.12) both}',
       '@keyframes cf-menu-pop{from{opacity:0;transform:scale(.86) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}',
       '.cf-card-menu[data-closing="true"]{animation:cf-menu-pop-out .16s ease both;pointer-events:none}',
       '@keyframes cf-menu-pop-out{from{opacity:1;transform:scale(1) translateY(0)}to{opacity:0;transform:scale(.9) translateY(5px)}}',
@@ -786,6 +786,9 @@ window.__ModuleLoader__.load({
         var menuBox = React.useState(null)
         var menuPath = menuBox[0]
         var setMenuPath = menuBox[1]
+        var menuPosBox = React.useState(null)
+        var menuPos = menuPosBox[0]
+        var setMenuPos = menuPosBox[1]
         var closingBox = React.useState(null)
         var closingPath = closingBox[0]
         var setClosingPath = closingBox[1]
@@ -838,8 +841,10 @@ window.__ModuleLoader__.load({
             closeMenu()
           }
           document.addEventListener('mousedown', close)
+          document.addEventListener('scroll', close, true)
           return function () {
             document.removeEventListener('mousedown', close)
+            document.removeEventListener('scroll', close, true)
           }
         }, [menuPath])
 
@@ -1036,8 +1041,19 @@ window.__ModuleLoader__.load({
               },
               onClick: function (event) {
                 if (event !== null && event !== undefined && typeof event.stopPropagation === 'function') event.stopPropagation()
-                if (menuPath === entry.path) closeMenu()
-                else setMenuPath(entry.path)
+                if (menuPath === entry.path) {
+                  closeMenu()
+                  return
+                }
+                var rect = event.currentTarget.getBoundingClientRect()
+                var viewportWidth = typeof window !== 'undefined' && typeof window.innerWidth === 'number' ? window.innerWidth : 1200
+                var menuWidth = 190
+                var menuHeight = 172
+                var left = Math.max(8, Math.min(rect.right - menuWidth, viewportWidth - menuWidth - 8))
+                var top = rect.top - menuHeight + rect.height - 6
+                if (top < 8) top = rect.bottom + 6
+                setMenuPos({ left: left, top: top })
+                setMenuPath(entry.path)
               },
             },
             menuIcon(14),
@@ -1060,6 +1076,7 @@ window.__ModuleLoader__.load({
               key: 'menu',
               className: 'cf-card-menu',
               'data-closing': isClosing ? 'true' : 'false',
+              style: menuPos === null ? { visibility: 'hidden' } : { left: menuPos.left, top: menuPos.top },
               onMouseDown: function (event) {
                 if (event !== null && event !== undefined && typeof event.stopPropagation === 'function') event.stopPropagation()
               },
@@ -1148,7 +1165,6 @@ window.__ModuleLoader__.load({
             convLine(entry),
             h('div', { className: 'cf-card-meta' }, isCopied ? t('copied') : metaBits.join(' · ')),
             menuButton(entry),
-            cardMenu(entry),
           )
         }
 
@@ -1245,6 +1261,17 @@ window.__ModuleLoader__.load({
           body = sections
         }
 
+        var menuNode = null
+        var menuTarget = menuPath !== null ? menuPath : closingPath
+        if (menuTarget !== null) {
+          for (var menuIndex = 0; menuIndex < files.length; menuIndex += 1) {
+            if (files[menuIndex].path === menuTarget) {
+              menuNode = cardMenu(files[menuIndex])
+              break
+            }
+          }
+        }
+
         var footLeft = ''
         if (data !== null && typeof data.generatedAt === 'number') footLeft = formatTime(data.generatedAt)
 
@@ -1339,6 +1366,7 @@ window.__ModuleLoader__.load({
               )
             : null,
           h('div', { className: 'cf-list' }, body),
+          menuNode,
           h(
             'div',
             { className: 'cf-foot' },
