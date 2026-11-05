@@ -789,7 +789,11 @@ window.__ModuleLoader__.load({
         var menuPosBox = React.useState(null)
         var menuPos = menuPosBox[0]
         var setMenuPos = menuPosBox[1]
+        var menuClosingPosBox = React.useState(null)
+        var menuClosingPos = menuClosingPosBox[0]
+        var setMenuClosingPos = menuClosingPosBox[1]
         var menuRef = React.useRef(null)
+        var menuClosingRef = React.useRef(null)
         var menuTimerRef = React.useRef(null)
         var closingBox = React.useState(null)
         var closingPath = closingBox[0]
@@ -856,28 +860,36 @@ window.__ModuleLoader__.load({
           }
         }, [menuPath])
 
-        React.useLayoutEffect(function () {
-          var element = menuRef.current
-          if (element === null || menuPos === null) return
+        function placeMenu(element, rect) {
+          if (element === null || rect === null || rect === undefined) return
           var width = element.offsetWidth
           var height = element.offsetHeight
           var viewportWidth = typeof window !== 'undefined' && typeof window.innerWidth === 'number' ? window.innerWidth : 1200
           var viewportHeight = typeof window !== 'undefined' && typeof window.innerHeight === 'number' ? window.innerHeight : 900
-          var left = Math.max(8, Math.min(menuPos.right - width, viewportWidth - width - 8))
-          var top = menuPos.top - height - 6
-          if (top < 8) top = Math.min(menuPos.bottom + 6, viewportHeight - height - 8)
+          var left = Math.max(8, Math.min(rect.right - width, viewportWidth - width - 8))
+          var top = rect.top - height - 6
+          if (top < 8) top = Math.min(rect.bottom + 6, viewportHeight - height - 8)
           element.style.left = Math.round(left) + 'px'
           element.style.top = Math.round(top) + 'px'
           element.style.visibility = 'visible'
-        }, [menuPath, menuPos, closingPath])
+        }
+
+        React.useLayoutEffect(function () {
+          placeMenu(menuRef.current, menuPos)
+          placeMenu(menuClosingRef.current, menuClosingPos)
+        }, [menuPath, menuPos, closingPath, menuClosingPos])
 
         function closeMenu() {
           var current = menuPath
           if (current === null) return
+          setMenuClosingPos(menuPos)
           setClosingPath(current)
           setMenuPath(null)
-          setTimeout(function () {
+          if (menuTimerRef.current !== null) clearTimeout(menuTimerRef.current)
+          menuTimerRef.current = setTimeout(function () {
+            menuTimerRef.current = null
             setClosingPath(null)
+            setMenuClosingPos(null)
           }, 160)
         }
 
@@ -1070,24 +1082,17 @@ window.__ModuleLoader__.load({
                 }
                 var rect = event.currentTarget.getBoundingClientRect()
                 var nextRect = { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, height: rect.height }
-                if (menuPath !== null) {
-                  var previous = menuPath
-                  setClosingPath(previous)
-                  setMenuPath(null)
-                  if (menuTimerRef.current !== null) clearTimeout(menuTimerRef.current)
-                  menuTimerRef.current = setTimeout(function () {
-                    menuTimerRef.current = null
-                    setClosingPath(null)
-                    setMenuPos(nextRect)
-                    setMenuPath(entry.path)
-                  }, 160)
-                  return
-                }
                 if (menuTimerRef.current !== null) {
                   clearTimeout(menuTimerRef.current)
                   menuTimerRef.current = null
                 }
-                if (closingPath !== null) setClosingPath(null)
+                setMenuClosingPos(menuPos)
+                setClosingPath(menuPath !== null ? menuPath : closingPath)
+                menuTimerRef.current = setTimeout(function () {
+                  menuTimerRef.current = null
+                  setClosingPath(null)
+                  setMenuClosingPos(null)
+                }, 160)
                 setMenuPos(nextRect)
                 setMenuPath(entry.path)
               },
@@ -1111,7 +1116,7 @@ window.__ModuleLoader__.load({
             {
               key: 'menu-' + entry.path,
               className: 'cf-card-menu',
-              ref: menuRef,
+              ref: isClosing ? menuClosingRef : menuRef,
               'data-closing': isClosing ? 'true' : 'false',
               style: menuPos === null ? { visibility: 'hidden' } : null,
               onMouseDown: function (event) {
@@ -1298,15 +1303,22 @@ window.__ModuleLoader__.load({
           body = sections
         }
 
-        var menuNode = null
-        var menuTarget = menuPath !== null ? menuPath : closingPath
-        if (menuTarget !== null) {
-          for (var menuIndex = 0; menuIndex < files.length; menuIndex += 1) {
-            if (files[menuIndex].path === menuTarget) {
-              menuNode = cardMenu(files[menuIndex])
-              break
-            }
+        function entryByPath(target) {
+          for (var entryIndex = 0; entryIndex < files.length; entryIndex += 1) {
+            if (files[entryIndex].path === target) return files[entryIndex]
           }
+          return null
+        }
+
+        var menuNode = null
+        var menuClosingNode = null
+        if (closingPath !== null) {
+          var closingEntry = entryByPath(closingPath)
+          if (closingEntry !== null) menuClosingNode = cardMenu(closingEntry)
+        }
+        if (menuPath !== null) {
+          var openEntry = entryByPath(menuPath)
+          if (openEntry !== null) menuNode = cardMenu(openEntry)
         }
 
         var footLeft = ''
@@ -1403,6 +1415,7 @@ window.__ModuleLoader__.load({
               )
             : null,
           h('div', { className: 'cf-list' }, body),
+          menuClosingNode,
           menuNode,
           h(
             'div',
