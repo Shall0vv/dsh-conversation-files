@@ -118,11 +118,37 @@ window.__ModuleLoader__.load({
       '.cf-apps-sep{height:1px;margin:4px 6px;background:var(--dsw-alias-border-l1)}',
       '.cf-group-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .24s cubic-bezier(.34,1.3,.64,1)}',
       '.cf-group-body[data-collapsed="true"]{grid-template-rows:0fr}',
-      '.cf-grid-wrap{overflow:hidden;min-height:0}',
+      '.cf-grid-wrap{overflow:visible;min-height:0}',
+      '.cf-group-body[data-collapsed="true"] .cf-grid-wrap{overflow:hidden}',
       '.cf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px;padding:10px 20px 0;transition:opacity .18s ease,transform .24s cubic-bezier(.34,1.3,.64,1)}',
-      '.cf-group-body[data-collapsed="true"] .cf-grid{opacity:0;transform:translateY(-6px) scale(.985)}',
-      '.cf-card{content-visibility:auto;contain-intrinsic-size:auto 168px;position:relative;display:flex;flex-direction:column;gap:4px;padding:8px;border:1px solid var(--dsw-alias-border-l1);border-radius:12px;background:var(--dsw-alias-bg-layer-1);cursor:pointer;transition:border-color .12s ease,background .12s ease}',
-      '.cf-card:hover{border-color:var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2)}',
+      '.cf-rows{display:flex;flex-direction:column;gap:6px;padding:10px 20px 0;transition:opacity .18s ease,transform .24s cubic-bezier(.34,1.3,.64,1)}',
+      '.cf-card{animation:cf-view-grid .34s cubic-bezier(.22,.9,.32,1) both}',
+      '@keyframes cf-view-grid{0%{opacity:0;transform:scale(.92) translateY(10px)}60%{opacity:1}100%{opacity:1;transform:none}}',
+      '.cf-row{animation:cf-view-row .32s cubic-bezier(.22,.9,.32,1) both}',
+      '@keyframes cf-view-row{0%{opacity:0;transform:scaleY(.45) translateY(-6px)}55%{opacity:1}100%{opacity:1;transform:none}}',
+      '.cf-card,.cf-row{transform-origin:center center}',
+      '.cf-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border:1px solid var(--dsw-alias-border-l1);border-radius:10px;background:var(--dsw-alias-bg-layer-1);cursor:pointer;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease}',
+      '.cf-row:hover{border-color:var(--dsw-alias-brand-primary);background:var(--dsw-alias-bg-layer-2);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dsw-alias-brand-primary) 22%,transparent)}',
+      '.cf-row-mark{flex:none;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;overflow:hidden;background:var(--dsw-alias-bg-layer-2)}',
+      '.cf-row-img{width:100%;height:100%;object-fit:cover;display:block}',
+      '.cf-row-ext{font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--dsw-alias-label-secondary)}',
+      '.cf-row-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}',
+      '.cf-row-name{font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.cf-row-name[data-missing="true"]{text-decoration:line-through;color:var(--dsw-alias-label-secondary)}',
+      '.cf-row-meta{font-size:11px;color:var(--dsw-alias-label-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.cf-row-badge{flex:none;padding:1px 6px;border:1px solid var(--dsw-alias-border-l1);border-radius:6px;font-size:9px;font-weight:600;letter-spacing:.03em;color:var(--dsw-alias-label-secondary)}',
+      '.cf-row-deleted{flex:none;font-size:10px;color:var(--dsw-alias-state-error-primary)}',
+      '.cf-row .cf-card-menu-btn{position:static;right:auto;bottom:auto;flex:none;opacity:0}',
+      '.cf-row:hover .cf-card-menu-btn,.cf-row .cf-card-menu-btn:focus-visible{opacity:1}',
+      '.cf-view-toggle{flex:none;display:flex;align-items:center;gap:2px;padding:2px;border:1px solid var(--dsw-alias-border-l1);border-radius:8px;background:var(--dsw-alias-bg-layer-1)}',
+      '.cf-view-btn{display:flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;transition:background .14s ease,color .14s ease}',
+      '.cf-view-btn:hover{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary)}',
+      '.cf-view-btn[data-active="true"]{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-brand-primary)}',
+      '.cf-group-body[data-collapsed="true"] .cf-grid,.cf-group-body[data-collapsed="true"] .cf-rows{opacity:0;transform:translateY(-6px) scale(.985)}',
+      '.cf-card{position:relative;display:flex;flex-direction:column;gap:4px;padding:8px;border:1px solid var(--dsw-alias-border-l1);border-radius:12px;background:var(--dsw-alias-bg-layer-1);cursor:pointer;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease}',
+      '.cf-card:hover{border-color:var(--dsw-alias-brand-primary);background:var(--dsw-alias-bg-layer-2);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dsw-alias-brand-primary) 22%,transparent)}',
+      '.cf-card:hover .cf-thumb{filter:brightness(1.06)}',
+      '.cf-card:active{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dsw-alias-brand-primary) 45%,transparent)}',
       '.cf-card[data-copied="true"]{border-color:var(--dsw-alias-brand-primary)}',
       '.cf-thumb{position:relative;display:flex;align-items:center;justify-content:center;height:92px;border-radius:8px;overflow:hidden;background:var(--dsw-alias-bg-layer-2)}',
       '.cf-thumb-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}',
@@ -208,6 +234,8 @@ window.__ModuleLoader__.load({
       groupOther: '其他',
       typeAll: '全部类型',
       extAll: '全部后缀',
+      viewGrid: '网格视图',
+      viewList: '列表视图',
       menuActions: '更多操作',
       menuDefault: '使用默认应用打开',
       menuChoose: '选择应用打开',
@@ -263,6 +291,8 @@ window.__ModuleLoader__.load({
       groupOther: 'Other',
       typeAll: 'All types',
       extAll: 'All extensions',
+      viewGrid: 'Grid view',
+      viewList: 'List view',
       menuActions: 'More actions',
       menuDefault: 'Open with default app',
       menuChoose: 'Open with…',
@@ -738,6 +768,7 @@ window.__ModuleLoader__.load({
     }
 
     var COLLAPSED_KEY = 'dsh-conversation-files:collapsed-groups:v2'
+    var VIEW_KEY = 'dsh-conversation-files:view-mode:v1'
 
     /** Last response kept across panel mounts so reopening shows data instantly. */
     var lastPayload = null
@@ -760,6 +791,42 @@ window.__ModuleLoader__.load({
       } catch (error) {
         /* persistence is best effort */
       }
+    }
+
+    function readViewMode() {
+      try {
+        if (typeof localStorage === 'undefined') return 'grid'
+        return localStorage.getItem(VIEW_KEY) === 'list' ? 'list' : 'grid'
+      } catch (error) {
+        return 'grid'
+      }
+    }
+
+    function writeViewMode(mode) {
+      try {
+        if (typeof localStorage !== 'undefined') localStorage.setItem(VIEW_KEY, mode)
+      } catch (error) {
+        /* best effort */
+      }
+    }
+
+    function gridIcon(size) {
+      var cells = []
+      for (var row = 0; row < 2; row += 1) {
+        for (var col = 0; col < 2; col += 1) {
+          cells.push(h('rect', { key: String(row) + String(col), x: 4 + col * 9, y: 4 + row * 9, width: 7, height: 7, rx: 1.6 }))
+        }
+      }
+      return svg(cells, size)
+    }
+
+    function listIcon(size) {
+      var lines = []
+      for (var index = 0; index < 3; index += 1) {
+        lines.push(h('rect', { key: 'a' + String(index), x: 4, y: 5 + index * 5.5, width: 3, height: 3, rx: 1 }))
+        lines.push(h('rect', { key: 'b' + String(index), x: 10, y: 6 + index * 5.5, width: 10, height: 1.6, rx: 0.8 }))
+      }
+      return svg(lines, size)
     }
 
     function caretIcon(size) {
@@ -826,6 +893,14 @@ window.__ModuleLoader__.load({
         var viewerBox = React.useState(null)
         var viewer = viewerBox[0]
         var setViewer = viewerBox[1]
+        var viewBox = React.useState(readViewMode)
+        var viewMode = viewBox[0]
+        var setViewMode = viewBox[1]
+
+        function chooseView(mode) {
+          setViewMode(mode)
+          writeViewMode(mode)
+        }
 
         function load() {
           setBusy(true)
@@ -914,6 +989,7 @@ window.__ModuleLoader__.load({
         function closeMenu() {
           var current = menuPath
           if (current === null) return
+          closeAppsMenu()
           setMenuClosingPos(menuPos)
           setClosingPath(current)
           setMenuPath(null)
@@ -971,7 +1047,6 @@ window.__ModuleLoader__.load({
             anchor = { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom }
           }
           setAppsMenu({ entry: entry, anchor: anchor, apps: null })
-          closeMenu()
           fetch(APPS_PATH + '?path=' + encodeURIComponent(entry.path), { credentials: 'include' })
             .then(function (response) {
               return response.json()
@@ -1067,6 +1142,7 @@ window.__ModuleLoader__.load({
         var extCounts = {}
         for (var extIndex = 0; extIndex < files.length; extIndex += 1) {
           var extFile = files[extIndex]
+          if (typeFilter !== 'all' && (typeof extFile.group === 'string' ? extFile.group : 'other') !== typeFilter) continue
           var extKey = String(extFile.ext === undefined ? '' : extFile.ext).toLowerCase()
           if (extKey === '') continue
           extCounts[extKey] = (extCounts[extKey] || 0) + 1
@@ -1075,6 +1151,12 @@ window.__ModuleLoader__.load({
           var delta = extCounts[right] - extCounts[left]
           return delta !== 0 ? delta : left < right ? -1 : left > right ? 1 : 0
         })
+        var extOptionsKey = extOptions.join('|')
+
+        React.useEffect(function () {
+          if (extFilter === 'all') return
+          if (extOptionsKey.split('|').indexOf(extFilter) === -1) setExtFilter('all')
+        }, [extFilter, extOptionsKey])
 
         function groupLabel(id) {
           if (id === 'image') return t('groupImage')
@@ -1116,11 +1198,13 @@ window.__ModuleLoader__.load({
         }
 
         function runAction(entry, route) {
+          closeAppsMenu()
           closeMenu()
           postJson(route, entry.path).catch(function () {})
         }
 
         function trashEntry(entry) {
+          closeAppsMenu()
           closeMenu()
           var confirmed = true
           try {
@@ -1218,7 +1302,69 @@ window.__ModuleLoader__.load({
           )
         }
 
-        function cardOf(entry) {
+        function rowOf(entry, order) {
+          var metaBits = []
+          var sizeLabel = formatBytes(entry.size)
+          var timeLabel = formatTime(entry.lastTime)
+          if (entry.count > 1) metaBits.push('×' + entry.count)
+          if (sizeLabel !== '') metaBits.push(sizeLabel)
+          if (timeLabel !== '') metaBits.push(timeLabel)
+          var meta = metaBits.join(' · ')
+          var source = ''
+          if (Array.isArray(entry.sessions) && entry.sessions.length > 0) {
+            var firstSession = entry.sessions[0]
+            if (firstSession !== null && typeof firstSession === 'object' && typeof firstSession.title === 'string') source = firstSession.title
+            if (entry.sessions.length > 1) source += ' +' + String(entry.sessions.length - 1)
+          }
+          var line = source === '' ? meta : meta === '' ? source : source + ' · ' + meta
+
+          var mark
+          if (entry.group === 'image' && entry.exists !== false) {
+            mark = h(
+              'span',
+              { className: 'cf-row-mark' },
+              h('img', {
+                className: 'cf-row-img',
+                src: THUMB_PATH + '?path=' + encodeURIComponent(entry.path) + '&v=' + thumbVersion(entry),
+                alt: '',
+                loading: 'lazy',
+                onError: function (event) {
+                  if (event !== null && event !== undefined && event.target !== null && event.target !== undefined) event.target.style.display = 'none'
+                },
+              }),
+            )
+          } else {
+            mark = h('span', { className: 'cf-row-mark' }, h('span', { className: 'cf-row-ext' }, extLabel(entry)))
+          }
+
+          return h(
+            'div',
+            {
+              key: entry.path,
+              className: 'cf-row',
+              'data-missing': entry.exists === false ? 'true' : 'false',
+              style: { animationDelay: String(Math.min(order, 16) * 14) + 'ms' },
+              title: t('openHint') + ' · ' + entry.path,
+              onClick: function (item) {
+                return function () {
+                  openWith(item, false)
+                }
+              }(entry),
+            },
+            mark,
+            h(
+              'span',
+              { className: 'cf-row-main' },
+              h('span', { className: 'cf-row-name', 'data-missing': entry.exists === false ? 'true' : 'false', title: entry.name }, entry.name),
+              h('span', { className: 'cf-row-meta', title: line }, line),
+            ),
+            entry.exists === false ? h('span', { className: 'cf-row-deleted' }, t('deleted')) : null,
+            h('span', { className: 'cf-row-badge' }, extLabel(entry)),
+            menuButton(entry),
+          )
+        }
+
+        function cardOf(entry, order) {
           var isCopied = copied === entry.path
           var metaBits = []
           var sizeLabel = formatBytes(entry.size)
@@ -1267,6 +1413,7 @@ window.__ModuleLoader__.load({
               key: entry.path,
               className: 'cf-card',
               'data-copied': isCopied ? 'true' : 'false',
+              style: { animationDelay: String(Math.min(order, 16) * 14) + 'ms' },
               title: t('openHint') + ' · ' + entry.path,
               onClick: function (item) {
                 return function () {
@@ -1296,7 +1443,9 @@ window.__ModuleLoader__.load({
           var members = buckets[groupId]
           if (members === undefined || members.length === 0) continue
           var cards = []
-          for (var cardIndex = 0; cardIndex < members.length; cardIndex += 1) cards.push(cardOf(members[cardIndex]))
+          for (var cardIndex = 0; cardIndex < members.length; cardIndex += 1) {
+            cards.push(viewMode === 'list' ? rowOf(members[cardIndex], cardIndex) : cardOf(members[cardIndex], cardIndex))
+          }
           var isCollapsed = collapsed[groupId] === true
           sections.push(
             h(
@@ -1331,7 +1480,11 @@ window.__ModuleLoader__.load({
               h(
                 'div',
                 { className: 'cf-group-body', 'data-collapsed': isCollapsed ? 'true' : 'false' },
-                h('div', { className: 'cf-grid-wrap' }, h('div', { className: 'cf-grid' }, cards)),
+                h(
+                  'div',
+                  { className: 'cf-grid-wrap' },
+                  h('div', { key: viewMode + '|' + filter + '|' + typeFilter + '|' + extFilter, className: viewMode === 'list' ? 'cf-rows' : 'cf-grid' }, cards),
+                ),
               ),
             ),
           )
@@ -1548,6 +1701,38 @@ window.__ModuleLoader__.load({
                   extOptions.map(function (extKey) {
                     return h('option', { key: extKey, value: extKey }, extKey.replace('.', '').toUpperCase() + ' (' + String(extCounts[extKey]) + ')')
                   }),
+                ),
+                h(
+                  'div',
+                  { className: 'cf-view-toggle', role: 'group' },
+                  h(
+                    'button',
+                    {
+                      type: 'button',
+                      className: 'cf-view-btn',
+                      'data-active': viewMode === 'grid' ? 'true' : 'false',
+                      title: t('viewGrid'),
+                      'aria-label': t('viewGrid'),
+                      onClick: function () {
+                        chooseView('grid')
+                      },
+                    },
+                    gridIcon(14),
+                  ),
+                  h(
+                    'button',
+                    {
+                      type: 'button',
+                      className: 'cf-view-btn',
+                      'data-active': viewMode === 'list' ? 'true' : 'false',
+                      title: t('viewList'),
+                      'aria-label': t('viewList'),
+                      onClick: function () {
+                        chooseView('list')
+                      },
+                    },
+                    listIcon(14),
+                  ),
                 ),
                 h('input', {
                   className: 'cf-search',

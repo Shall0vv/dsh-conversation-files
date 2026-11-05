@@ -60,9 +60,11 @@ Interactions:
 - **Fold a group** — click its header; the grid animates closed and the fold state is persisted in `localStorage`.
 - **Filter by kind** — chips: 全部 (existing files) / 写入 / 交付 / 已删除.
 - **Filter by file type** — the 全部类型 dropdown narrows to one group (with live counts).
-- **Filter by extension** — the 全部后缀 dropdown lists every extension actually present, most common first.
+- **Filter by extension** — the 全部后缀 dropdown lists only the extensions present **in the current type filter** (选「文档」时只剩 md/docx/pdf…), most common first; picking a type that no longer contains the chosen extension resets it to 全部后缀.
 - **Search** — filters by file name or full path.
-- Group headers are sticky while scrolling; the panel refreshes every 5 s while visible and skips polling while the window is hidden, and off-screen cards use `content-visibility:auto`.
+- **Switch views** — the 网格 / 列表 buttons at the right of the toolbar flip between the card grid and a compact list (thumbnail, name, source conversation · writes · size · date, extension badge, ⋮ menu). The choice is persisted in `localStorage`.
+- Switching the view, the kind chips, the type filter or the extension filter replays a staggered *expand* transition — grid cards pop in from `scale(.92)` and list rows unfold from a squashed bar, 14 ms apart.
+- Group headers are sticky while scrolling; the panel refreshes every 5 s while visible and skips polling while the window is hidden.
 
 ## How it works
 
