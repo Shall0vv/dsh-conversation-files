@@ -49,7 +49,7 @@
 | 菜单项 | 行为 |
 | --- | --- |
 | 使用默认应用打开 | 交给 `open` 用默认程序打开 |
-| 选择应用打开 | 弹出 macOS 应用选择器（无自动化权限时退化为在 Finder 中显示） |
+| 选择应用打开 | 展开二级菜单，列出系统能打开这个文件的应用（默认应用排第一，末尾是「其他应用…」）。 |
 | 在 Finder 中打开 | `open -R` 定位到文件 |
 | 移到废纸篓 | 确认后移入 `~/.Trash`，可从废纸篓恢复 |
 
@@ -72,7 +72,8 @@
   - `GET /dsh-conversation-files/text?path=…` —— 生成文件的前 40 行文本（≤ 256 KB，二进制文件拒绝），用于代码/Markdown 缩略图。
   - `GET /dsh-conversation-files/preview?path=…&size=…` —— 生成文档的页面缩略图，用 `qlmanage -t` 渲染，缓存在 `~/.dsh/cache/dsh-conversation-files/previews/`（每个文件一张 PNG + 一个记录 `{mtimeMs,size}` 的 JSON，用于判断是否过期），进程内还有一层内存缓存。
   - `GET /dsh-conversation-files/raw?path=…` —— 原始字节（图片、PDF、音视频），供插件内查看器使用。
-  - `POST /dsh-conversation-files/open`、`/open-with`、`/reveal`、`/trash` —— 上面四个卡片动作，每一个都会先拿路径去当前快照里校验。
+  - `GET /dsh-conversation-files/apps?path=…` —— 列出能打开这个文件的应用（JXA 调 `NSWorkspace.URLsForApplicationsToOpenURL`，默认应用排第一），按扩展名缓 10 分钟。
+  - `POST /dsh-conversation-files/open`、`/open-with`（可带 `app=` 指定应用，也可不带走系统选择器）、`/reveal`、`/trash` —— 卡片动作，每一个都会先拿路径去当前快照里校验。
   - 所有路由都通过 `connection.requestRejection` 拦截跨站请求。
 - **Client 端**（`client/client.js`）—— 注册 `sidebar.panellist`（id `conversation-files`，order 50）和与之对应的 `main` 面板；轮询上面的路由，按 `group` 分桶，渲染吸顶分组头 + 自适应卡片网格。
 
@@ -118,5 +119,5 @@ bundle 以 link 形式挂到 `~/.dsh/profiles/<profile>/package.json`，并登�
 
 ### 运行要求
 
-- macOS：QuickLook 缩略图（`qlmanage`）、移到废纸篓（`~/.Trash`）、选择应用打开（`osascript`）用的是系统能力；画廊本身、文本缩略图、筛选在任何平台都能用。
+- macOS：QuickLook 缩略图（`qlmanage`）、移到废纸篓（`~/.Trash`）、应用列表与选择应用打开（`osascript` + `NSWorkspace`）用的是系统能力；画廊本身、文本缩略图、筛选在任何平台都能用。
 - DSH 需要带 `web` 客户端，没有额外依赖。

@@ -109,6 +109,13 @@ window.__ModuleLoader__.load({
       '.cf-menu-item{display:block;width:100%;padding:6px 10px;border:none;border-radius:7px;background:transparent;color:var(--dsw-alias-label-primary);font-size:12px;line-height:1.4;text-align:left;cursor:pointer;white-space:nowrap}',
       '.cf-menu-item:hover{background:var(--dsw-alias-bg-layer-2)}',
       '.cf-menu-item[data-danger="true"]{color:var(--dsw-alias-state-error-primary)}',
+      '.cf-apps-menu{position:fixed;z-index:1300;min-width:210px;max-width:300px;max-height:360px;overflow:auto;padding:5px;border-radius:12px;border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-overlay);box-shadow:0 18px 40px rgba(0,0,0,.35);animation:cf-menu-pop .17s cubic-bezier(.22,.9,.32,1.12) both;transform-origin:top left}',
+      '.cf-apps-item{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:7px 10px;border:0;border-radius:8px;background:transparent;color:var(--dsw-alias-label-primary);font-size:13px;line-height:1.2;text-align:left;cursor:pointer;font-family:inherit}',
+      '.cf-apps-item:hover{background:var(--dsw-alias-bg-layer-2)}',
+      '.cf-apps-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '.cf-apps-badge{flex:none;font-size:10px;padding:1px 6px;border-radius:999px;background:color-mix(in srgb,var(--dsw-alias-brand-primary) 18%,transparent);color:var(--dsw-alias-brand-primary)}',
+      '.cf-apps-note{padding:8px 10px;font-size:12px;color:var(--dsw-alias-label-secondary)}',
+      '.cf-apps-sep{height:1px;margin:4px 6px;background:var(--dsw-alias-border-l1)}',
       '.cf-group-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .24s cubic-bezier(.34,1.3,.64,1)}',
       '.cf-group-body[data-collapsed="true"]{grid-template-rows:0fr}',
       '.cf-grid-wrap{overflow:hidden;min-height:0}',
@@ -204,6 +211,10 @@ window.__ModuleLoader__.load({
       menuActions: '更多操作',
       menuDefault: '使用默认应用打开',
       menuChoose: '选择应用打开',
+      appsLoading: '正在查找应用…',
+      appsEmpty: '没有找到可用的应用',
+      appsOther: '其他应用…',
+      appsDefault: '默认',
       menuReveal: '在 Finder 中打开',
       menuTrash: '移到废纸篓',
       confirmTrash: '把这个文件移到废纸篓？可以从废纸篓恢复。',
@@ -255,6 +266,10 @@ window.__ModuleLoader__.load({
       menuActions: 'More actions',
       menuDefault: 'Open with default app',
       menuChoose: 'Open with…',
+      appsLoading: 'Looking for apps…',
+      appsEmpty: 'No app found',
+      appsOther: 'Other…',
+      appsDefault: 'Default',
       menuReveal: 'Show in Finder',
       menuTrash: 'Move to Trash',
       confirmTrash: 'Move this file to the Trash? You can restore it from there.',
@@ -371,6 +386,7 @@ window.__ModuleLoader__.load({
     var RAW_PATH = '/dsh-conversation-files/raw'
     var OPEN_PATH = '/dsh-conversation-files/open'
     var OPEN_WITH_PATH = '/dsh-conversation-files/open-with'
+    var APPS_PATH = '/dsh-conversation-files/apps'
     var MARKDOWN_EXTS = ['md', 'markdown', 'mdx']
     var DOC_PREVIEW_EXTS = [
       'pdf', 'doc', 'docx', 'docm', 'dot', 'dotx', 'rtf', 'odt', 'pages',
@@ -789,6 +805,9 @@ window.__ModuleLoader__.load({
         var menuPosBox = React.useState(null)
         var menuPos = menuPosBox[0]
         var setMenuPos = menuPosBox[1]
+        var appsMenuBox = React.useState(null)
+        var appsMenu = appsMenuBox[0]
+        var setAppsMenu = appsMenuBox[1]
         var menuClosingPosBox = React.useState(null)
         var menuClosingPos = menuClosingPosBox[0]
         var setMenuClosingPos = menuClosingPosBox[1]
@@ -846,6 +865,19 @@ window.__ModuleLoader__.load({
             clearInterval(timer)
           }
         }, [])
+
+        React.useEffect(function () {
+          if (appsMenu === null) return undefined
+          var dismiss = function () {
+            closeAppsMenu()
+          }
+          document.addEventListener('scroll', dismiss, true)
+          document.addEventListener('mousedown', dismiss)
+          return function () {
+            document.removeEventListener('scroll', dismiss, true)
+            document.removeEventListener('mousedown', dismiss)
+          }
+        }, [appsMenu])
 
         React.useEffect(function () {
           if (menuPath === null) return undefined
@@ -926,6 +958,47 @@ window.__ModuleLoader__.load({
         function openWith(entry, chooser) {
           var route = chooser ? OPEN_WITH_PATH : OPEN_PATH
           fetch(route + '?path=' + encodeURIComponent(entry.path), { method: 'POST', credentials: 'include' }).catch(function () {})
+        }
+
+        function closeAppsMenu() {
+          setAppsMenu(null)
+        }
+
+        function openAppsMenu(entry, event) {
+          var anchor = null
+          if (event !== null && event !== undefined && event.currentTarget !== null && event.currentTarget !== undefined && typeof event.currentTarget.getBoundingClientRect === 'function') {
+            var rect = event.currentTarget.getBoundingClientRect()
+            anchor = { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom }
+          }
+          setAppsMenu({ entry: entry, anchor: anchor, apps: null })
+          closeMenu()
+          fetch(APPS_PATH + '?path=' + encodeURIComponent(entry.path), { credentials: 'include' })
+            .then(function (response) {
+              return response.json()
+            })
+            .then(function (body) {
+              var list = body !== null && body !== undefined && Array.isArray(body.apps) ? body.apps : []
+              setAppsMenu(function (current) {
+                return current === null ? null : { entry: current.entry, anchor: current.anchor, apps: list }
+              })
+            })
+            .catch(function () {
+              setAppsMenu(function (current) {
+                return current === null ? null : { entry: current.entry, anchor: current.anchor, apps: [] }
+              })
+            })
+        }
+
+        function chooseApp(entry, appPath) {
+          closeAppsMenu()
+          if (appPath === null || appPath === undefined) {
+            openWith(entry, true)
+            return
+          }
+          fetch(OPEN_WITH_PATH + '?path=' + encodeURIComponent(entry.path) + '&app=' + encodeURIComponent(appPath), {
+            method: 'POST',
+            credentials: 'include',
+          }).catch(function () {})
         }
 
         var files = data !== null && Array.isArray(data.files) ? data.files : []
@@ -1107,7 +1180,7 @@ window.__ModuleLoader__.load({
           if (!isOpen && !isClosing) return null
           var items = [
             { id: 'default', label: t('menuDefault'), run: function () { runAction(entry, OPEN_PATH) } },
-            { id: 'choose', label: t('menuChoose'), run: function () { runAction(entry, OPEN_WITH_PATH) } },
+            { id: 'choose', label: t('menuChoose'), keepOpen: true, run: function (event) { openAppsMenu(entry, event) } },
             { id: 'reveal', label: t('menuReveal'), run: function () { runAction(entry, REVEAL_PATH) } },
             { id: 'trash', label: t('menuTrash'), danger: true, run: function () { trashEntry(entry) } },
           ]
@@ -1136,7 +1209,7 @@ window.__ModuleLoader__.load({
                   'data-danger': item.danger === true ? 'true' : 'false',
                   onClick: function (event) {
                     if (event !== null && event !== undefined && typeof event.stopPropagation === 'function') event.stopPropagation()
-                    item.run()
+                    item.run(event)
                   },
                 },
                 item.label,
@@ -1303,6 +1376,80 @@ window.__ModuleLoader__.load({
           body = sections
         }
 
+        var appsMenuNode = null
+        if (appsMenu !== null) {
+          var appsAnchor = appsMenu.anchor
+          var appsList = appsMenu.apps
+          var appsEntry = appsMenu.entry
+          var appsStyle = null
+          if (appsAnchor !== null) {
+            var appsViewportWidth = typeof window !== 'undefined' && typeof window.innerWidth === 'number' ? window.innerWidth : 1200
+            var appsViewportHeight = typeof window !== 'undefined' && typeof window.innerHeight === 'number' ? window.innerHeight : 900
+            var appsWidth = 216
+            var appsLeft = appsAnchor.right + 4
+            if (appsLeft + appsWidth > appsViewportWidth - 8) appsLeft = Math.max(8, appsAnchor.left - appsWidth - 4)
+            var appsEstimatedHeight = appsList === null ? 64 : Math.min(360, 16 + appsList.length * 30 + 44)
+            var appsTop = Math.max(8, Math.min(appsAnchor.top - 6, appsViewportHeight - appsEstimatedHeight - 8))
+            appsStyle = { left: Math.round(appsLeft) + 'px', top: Math.round(appsTop) + 'px' }
+          }
+          var appsChildren = []
+          if (appsList === null) {
+            appsChildren.push(h('div', { key: 'note', className: 'cf-apps-note' }, t('appsLoading')))
+          } else {
+            if (appsList.length === 0) {
+              appsChildren.push(h('div', { key: 'empty', className: 'cf-apps-note' }, t('appsEmpty')))
+            }
+            appsList.forEach(function (app) {
+              appsChildren.push(
+                h(
+                  'button',
+                  {
+                    key: app.path,
+                    type: 'button',
+                    className: 'cf-apps-item',
+                    onClick: function (event) {
+                      if (event !== null && event !== undefined && typeof event.stopPropagation === 'function') event.stopPropagation()
+                      chooseApp(appsEntry, app.path)
+                    },
+                  },
+                  h('span', { className: 'cf-apps-name' }, app.name),
+                  app.isDefault === true ? h('span', { className: 'cf-apps-badge' }, t('appsDefault')) : null,
+                ),
+              )
+            })
+            appsChildren.push(h('div', { key: 'sep', className: 'cf-apps-sep' }))
+            appsChildren.push(
+              h(
+                'button',
+                {
+                  key: 'other',
+                  type: 'button',
+                  className: 'cf-apps-item',
+                  onClick: function (event) {
+                    if (event !== null && event !== undefined && typeof event.stopPropagation === 'function') event.stopPropagation()
+                    chooseApp(appsEntry, null)
+                  },
+                },
+                h('span', { className: 'cf-apps-name' }, t('appsOther')),
+              ),
+            )
+          }
+          appsMenuNode = h(
+            'div',
+            {
+              className: 'cf-apps-menu',
+              style: appsStyle,
+              onMouseDown: function (event) {
+                if (event !== null && event !== undefined && typeof event.stopPropagation === 'function') event.stopPropagation()
+              },
+              onClick: function (event) {
+                if (event !== null && event !== undefined && typeof event.stopPropagation === 'function') event.stopPropagation()
+              },
+            },
+            appsChildren,
+          )
+        }
+
         function entryByPath(target) {
           for (var entryIndex = 0; entryIndex < files.length; entryIndex += 1) {
             if (files[entryIndex].path === target) return files[entryIndex]
@@ -1417,6 +1564,7 @@ window.__ModuleLoader__.load({
           h('div', { className: 'cf-list' }, body),
           menuClosingNode,
           menuNode,
+          appsMenuNode,
           h(
             'div',
             { className: 'cf-foot' },

@@ -49,7 +49,7 @@ Every card carries the extension in its top-right corner and shows the conversat
 | menu entry | action |
 | --- | --- |
 | 使用默认应用打开 / Open with default app | hands the file to `open` |
-| 选择应用打开 / Open with… | macOS application chooser (falls back to revealing the file in Finder when automation is denied) |
+| 选择应用打开 / Open with… | a second menu listing the apps macOS can open this file with (the default one first, then *Other…* for the system chooser) |
 | 在 Finder 中打开 / Show in Finder | `open -R` |
 | 移到废纸篓 / Move to Trash | moves the file into `~/.Trash` (recoverable), after a confirmation |
 
@@ -72,7 +72,8 @@ Interactions:
   - `GET /dsh-conversation-files/text?path=…` — the first 40 lines of a generated text file (≤ 256 KB, binary files rejected), used for the code/markdown previews.
   - `GET /dsh-conversation-files/preview?path=…&size=…` — a page thumbnail for a generated document, rendered with `qlmanage -t` and cached in `~/.dsh/cache/dsh-conversation-files/previews/` (one PNG + one JSON of `{mtimeMs,size}` per file, keyed by path hash and size), memory-cached per process.
   - `GET /dsh-conversation-files/raw?path=…` — original bytes (images, PDF, audio/video) for the in-panel viewer.
-  - `POST /dsh-conversation-files/open`, `/open-with`, `/reveal`, `/trash` — the four card actions above; every one validates the path against the current snapshot first.
+  - `GET /dsh-conversation-files/apps?path=…` — the applications that can open a generated file, best match first (JXA + `NSWorkspace.URLsForApplicationsToOpenURL`), cached per extension for 10 minutes.
+  - `POST /dsh-conversation-files/open`, `/open-with` (with or without an explicit `app=`), `/reveal`, `/trash` — the card actions above; every one validates the path against the current snapshot first.
   - All routes reject cross-site requests through `connection.requestRejection`.
 - **Client** (`client/client.js`) — registers `sidebar.panellist` (id `conversation-files`, order 50) and the matching `main` panel; polls the route, buckets files by `group`, and renders sticky group headers with a responsive card grid.
 
@@ -118,5 +119,5 @@ The bundle is linked into `~/.dsh/profiles/<profile>/package.json` and listed in
 
 ### Requirements
 
-- macOS, for the QuickLook thumbnails (`qlmanage`), the Trash move (`~/.Trash`) and the open-with picker (`osascript`). The gallery itself, the text previews and the filters work anywhere.
+- macOS, for the QuickLook thumbnails (`qlmanage`), the Trash move (`~/.Trash`) and the app list / open-with picker (`osascript` + `NSWorkspace`). The gallery itself, the text previews and the filters work anywhere.
 - DSH with a `web` client bundle — no extra dependencies.
