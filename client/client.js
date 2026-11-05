@@ -790,6 +790,7 @@ window.__ModuleLoader__.load({
         var menuPos = menuPosBox[0]
         var setMenuPos = menuPosBox[1]
         var menuRef = React.useRef(null)
+        var menuTimerRef = React.useRef(null)
         var closingBox = React.useState(null)
         var closingPath = closingBox[0]
         var setClosingPath = closingBox[1]
@@ -824,6 +825,12 @@ window.__ModuleLoader__.load({
               setBusy(false)
             })
         }
+
+        React.useEffect(function () {
+          return function () {
+            if (menuTimerRef.current !== null) clearTimeout(menuTimerRef.current)
+          }
+        }, [])
 
         React.useEffect(function () {
           load()
@@ -1062,7 +1069,26 @@ window.__ModuleLoader__.load({
                   return
                 }
                 var rect = event.currentTarget.getBoundingClientRect()
-                setMenuPos({ left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, height: rect.height })
+                var nextRect = { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, height: rect.height }
+                if (menuPath !== null) {
+                  var previous = menuPath
+                  setClosingPath(previous)
+                  setMenuPath(null)
+                  if (menuTimerRef.current !== null) clearTimeout(menuTimerRef.current)
+                  menuTimerRef.current = setTimeout(function () {
+                    menuTimerRef.current = null
+                    setClosingPath(null)
+                    setMenuPos(nextRect)
+                    setMenuPath(entry.path)
+                  }, 160)
+                  return
+                }
+                if (menuTimerRef.current !== null) {
+                  clearTimeout(menuTimerRef.current)
+                  menuTimerRef.current = null
+                }
+                if (closingPath !== null) setClosingPath(null)
+                setMenuPos(nextRect)
                 setMenuPath(entry.path)
               },
             },
