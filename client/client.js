@@ -857,7 +857,7 @@ window.__ModuleLoader__.load({
           var viewportWidth = typeof window !== 'undefined' && typeof window.innerWidth === 'number' ? window.innerWidth : 1200
           var viewportHeight = typeof window !== 'undefined' && typeof window.innerHeight === 'number' ? window.innerHeight : 900
           var left = Math.max(8, Math.min(menuPos.right - width, viewportWidth - width - 8))
-          var top = menuPos.bottom - height
+          var top = menuPos.top - height - 6
           if (top < 8) top = Math.min(menuPos.bottom + 6, viewportHeight - height - 8)
           element.style.left = Math.round(left) + 'px'
           element.style.top = Math.round(top) + 'px'
